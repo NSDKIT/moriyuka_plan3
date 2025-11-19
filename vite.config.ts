@@ -1,8 +1,10 @@
+// vite.config.ts
+
 import { jsxLocPlugin } from "@builder.io/vite-plugin-jsx-loc";
 import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
-import fs from "node:fs";
-import path from "path";
+import fs from "node:fs"; // fs モジュールは Vite の設定で直接使われていないようですが、import されています。
+import path from "node:path";
 import { defineConfig } from "vite";
 import { vitePluginManusRuntime } from "vite-plugin-manus-runtime";
 
@@ -22,6 +24,18 @@ export default defineConfig({
   build: {
     outDir: path.resolve(import.meta.dirname, "dist/public"),
     emptyOutDir: true,
+    // -----------------------------------------------------------------------
+    // ★★★ `react-intersection-observer` の解決エラーに対処するための追加設定 ★★★
+    // -----------------------------------------------------------------------
+    // この設定は、 Rollup が `react-intersection-observer` を外部モジュールとして
+    // 扱おうとして失敗する場合に、明示的に外部化することを指示します。
+    // ただし、通常は `pnpm install` で解決されるべき問題です。
+    // もし上記の方法で解決しない場合の最終手段として検討してください。
+    //
+    // rollupOptions: {
+    //   external: ['react-intersection-observer'],
+    // },
+    // -----------------------------------------------------------------------
   },
   server: {
     port: 3000,
@@ -38,7 +52,7 @@ export default defineConfig({
     ],
     fs: {
       strict: true,
-      deny: ["**/.*"],
+      deny: ["**/.*"], // `.` で始まるディレクトリへのアクセスを拒否
     },
   },
 });
