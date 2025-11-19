@@ -1,9 +1,51 @@
-import { useEffect, useState } from "react";
+// client/src/pages/Home.tsx
+
+import { useEffect, useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
+import { useInView } from 'react-intersection-observer'; // react-intersection-observer をインポート
 
 export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
+
+  // Intersection Observer の設定
+  // OICOTセクションの表示状態を監視
+  const { ref: oicotRef, inView: isOicotInView } = useInView({
+    threshold: 0.5, // セクションの50%が表示されたらトリガー
+    triggerOnce: true, // 一度だけトリガーする
+  });
+
+  // 最後のセクション（CONTACTセクションを最後のセクションと仮定）の表示状態を監視
+  const { ref: lastSectionRef, inView: isLastSectionInView } = useInView({
+    threshold: 0.5, // セクションの50%が表示されたらトリガー
+    triggerOnce: true, // 一度だけトリガーする
+  });
+
+  // 全体のカラー状態を管理するState
+  // 初期値は 'monochrome' (モノクロ)
+  const [colorState, setColorState] = useState<'monochrome' | 'color'>('monochrome');
+
+  // colorState を更新する useEffect
+  useEffect(() => {
+    // OICOTセクションが表示されたらカラー状態にする
+    if (isOicotInView) {
+      setColorState('color');
+    } 
+    // 最後のセクションが表示されたらモノクロ状態に戻す
+    // （※ここでは、OICOTセクションを過ぎて最後のセクションが表示されたらモノクロに戻すロジック）
+    else if (isLastSectionInView) {
+      setColorState('monochrome');
+    } 
+    // OICOTセクションも最後のセクションも画面外の場合、初期状態に戻す（必要に応じて）
+    // 例えば、スクロールしてOICOTセクションを過ぎ、かつ最後のセクションもまだ画面外の場合など
+    else if (!isOicotInView && !isLastSectionInView && colorState === 'color') {
+      // この条件は、意図しないリセットを防ぐため、必要に応じて調整してください。
+      // 例えば、OICOTセクションを通り過ぎた後、ずっとカラーのままにしたい場合は、このelse ifブロックは不要です。
+      // 今回の要件（OICOTで色、最後はモノクロ）では、isLastSectionInViewがtrueになったらモノクロに戻るので、
+      // このelse ifは削除しても意図通りに動作する可能性が高いです。
+      // setColorState('monochrome'); 
+    }
+  }, [isOicotInView, isLastSectionInView, colorState]); // colorStateも依存配列に追加
 
   // カスタムカーソル
   useEffect(() => {
@@ -37,7 +79,8 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen relative">
+    // colorStateに応じて 'is-monochrome' クラスを動的に適用
+    <div className={`min-h-screen relative ${colorState === 'monochrome' ? 'is-monochrome' : ''}`}>
       {/* 左右固定動画 (PC版のみ) */}
       <div className="hidden lg:block">
         {/* 左動画 */}
@@ -122,8 +165,8 @@ export default function Home() {
               <h2 className="text-4xl font-light tracking-wider mt-2">PROFILE</h2>
             </div>
             <div className="space-y-8">
-              <img 
-                src="https://iro-color.com/img/episode/about620-gray.jpg" 
+              <img
+                src="https://iro-color.com/img/episode/about620-gray.jpg"
                 alt="もりゆか プロフィール画像"
                 className="w-full rounded-lg shadow-lg fade-in"
               />
@@ -138,15 +181,28 @@ export default function Home() {
         </section>
 
         {/* OICOT FUKUIセクション */}
-        <section id="oicot" className="py-20 px-4 bg-gray-50/90 backdrop-blur-sm">
+        <section
+          ref={oicotRef} // OICOTセクションにrefを割り当て
+          id="oicot"
+          // isOicotInViewがtrueの場合に is-colorful クラスを適用
+          className={`py-20 px-4 bg-white/90 backdrop-blur-sm shadow-lg max-w-3xl mx-auto ${isOicotInView ? 'is-colorful' : ''}`}
+        >
           <div className="container max-w-3xl mx-auto">
             <div className="mb-8 fade-in">
               <span className="text-sm text-gray-500 tracking-wider">02</span>
-              <h2 className="text-4xl font-light tracking-wider mt-2">OICOT FUKUI</h2>
+              {/* <h2>タグを<a>タグに変更し、hrefとtargetを設定 */}
+              <a
+                href="https://moriyuka-hp.vercel.app/oicot-fukui.html"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-4xl font-light tracking-wider mt-2 block" // blockで改行させる
+              >
+                OICOT FUKUI
+              </a>
             </div>
             <div className="space-y-8">
-              <img 
-                src="https://img.freepik.com/premium-photo/wavy-black-white-background-wallpaper-grey-smooth-lines-shiny-modern-geometric-polygon-textures_1030874-14146.jpg?semt=ais_incoming&w=740&q=80" 
+              <img
+                src="https://img.freepik.com/premium-photo/wavy-black-white-background-wallpaper-grey-smooth-lines-shiny-modern-geometric-polygon-textures_1030874-14146.jpg?semt=ais_incoming&w=740&q=80"
                 alt="OICOT FUKUIロゴ"
                 className="w-full rounded-lg shadow-lg fade-in"
               />
@@ -209,8 +265,8 @@ export default function Home() {
                 { date: '2024.10.28', title: '舞台「夢の続き」千秋楽を迎えました' },
                 { date: '2024.09.10', title: 'ドラマ「街の記憶」第3話放送' },
               ].map((news, index) => (
-                <div 
-                  key={index} 
+                <div
+                  key={index}
                   className="border-b border-gray-200 pb-4 fade-in"
                   style={{ animationDelay: `${index * 0.1}s` }}
                 >
@@ -223,35 +279,44 @@ export default function Home() {
         </section>
 
         {/* WORKSセクション */}
-        <section id="works" className="py-20 px-4 bg-white/90 backdrop-blur-sm">
-          <div className="container max-w-3xl mx-auto">
+        <section id="works" className="py-20 px-4 bg-white/80 backdrop-blur-sm">
+          <div className="container max-w-4xl mx-auto">
             <div className="mb-12 fade-in">
               <span className="text-sm text-gray-500 tracking-wider">05</span>
               <h2 className="text-4xl font-light tracking-wider mt-2">WORKS</h2>
             </div>
-            <div className="grid md:grid-cols-2 gap-6">
+            <div className="grid md:grid-cols-3 gap-6">
               {[
-                { category: 'MOVIE', title: '映画作品一覧' },
-                { category: 'DRAMA', title: 'ドラマ作品一覧' },
-                { category: 'STAGE', title: '舞台作品一覧' },
-                { category: 'CM', title: 'CM作品一覧' },
-                { category: 'PROMOTION', title: 'プロモーション' },
+                { category: 'MOVIE', title: '映画作品一覧', url: 'https://moriyuka-hp.vercel.app/movie.html' },
+                { category: 'DRAMA', title: 'ドラマ作品一覧', url: 'https://moriyuka-hp.vercel.app/drama.html' }, // 仮URL
+                { category: 'STAGE', title: '舞台作品一覧', url: 'https://moriyuka-hp.vercel.app/stage.html' }, // 仮URL
+                { category: 'CM', title: 'CM作品一覧', url: 'https://moriyuka-hp.vercel.app/cm.html' }, // 仮URL
+                { category: 'PROMOTION', title: 'プロモーション', url: 'https://moriyuka-hp.vercel.app/promotion.html' }, // 仮URL
               ].map((work, index) => (
-                <div 
+                <a
                   key={index}
+                  href={work.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="border border-gray-200 p-6 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer fade-in"
                   style={{ animationDelay: `${index * 0.1}s` }}
                 >
                   <p className="text-xs text-gray-500 mb-2">{work.category}</p>
                   <p className="font-light">{work.title}</p>
-                </div>
+                  <span className="text-xl">↑</span> {/* 外部リンクを示すアイコン */}
+                </a>
               ))}
             </div>
           </div>
         </section>
 
         {/* CONTACTセクション */}
-        <section id="contact" className="py-20 px-4 bg-gray-50/90 backdrop-blur-sm">
+        <section
+          ref={lastSectionRef} // 最後のセクションとしてrefを割り当て
+          id="contact"
+          // isLastSectionInViewがtrueの場合に is-monochrome クラスを適用
+          className={`py-20 px-4 bg-gray-50/90 backdrop-blur-sm ${isLastSectionInView ? 'is-monochrome' : ''}`}
+        >
           <div className="container max-w-3xl mx-auto text-center">
             <div className="mb-12 fade-in">
               <span className="text-sm text-gray-500 tracking-wider">06</span>
@@ -262,8 +327,8 @@ export default function Home() {
                 お仕事のご依頼・お問い合わせは、<br className="md:hidden"/>
                 下記のメールアドレスまでお願いいたします。
               </p>
-              <a 
-                href="mailto:contact@moriyuka.com" 
+              <a
+                href="mailto:contact@moriyuka.com"
                 className="inline-block text-lg font-light border-b-2 border-gray-800 hover:opacity-70 transition-opacity"
               >
                 contact@moriyuka.com
@@ -273,7 +338,7 @@ export default function Home() {
         </section>
 
         {/* フッター */}
-        <footer className="py-8 px-4 bg-white/90 backdrop-blur-sm text-center">
+        <footer className={`py-8 px-4 text-center ${isLastSectionInView ? 'is-monochrome' : ''}`}>
           <p className="text-sm text-gray-500">© 2024 MORI YUKA. All Rights Reserved.</p>
         </footer>
       </div>
