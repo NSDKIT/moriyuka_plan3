@@ -138,23 +138,28 @@ export default function Home() {
         </section>
 
         {/* OICOT FUKUIセクション */}
-        <section id="oicot" className="py-20 px-4 bg-white/80 backdrop-blur-sm">
-          <div className="container max-w-4xl mx-auto">
+        <section
+          id="oicot"
+          className="py-20 px-4 bg-white/90 backdrop-blur-sm shadow-lg max-w-3xl mx-auto"
+        >
+          <div className="container max-w-3xl mx-auto">
             <div className="mb-8 fade-in">
               <span className="text-sm text-gray-500 tracking-wider">02</span>
-              {/* <h2>タグを<button>に変更し、onClickでリンクを設定 */}
-              <button
-                onClick={() => window.open('https://moriyuka-hp.vercel.app/oicot-fukui.html', '_blank')}
-                className="text-4xl font-light tracking-wider mt-2 text-left w-full"
+              {/* <h2>タグを<a>タグに変更し、hrefとtargetを設定 */}
+              <a
+                href="https://moriyuka-hp.vercel.app/oicot-fukui.html"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-4xl font-light tracking-wider mt-2 block" // blockで改行させる
               >
                 OICOT FUKUI
-              </button>
+              </a>
             </div>
-            <div className="grid md:grid-cols-2 gap-8 items-start">
+            <div className="space-y-8">
               <img
-                src="https://img.fre freepik.com/premium-photo/wavy-black-white-background-wallpaper-grey-smooth-lines-shiny-modern-geometric-polygon-textures_1030874-14146.jpg?semt=ais_incoming&w=740&q=80"
+                src="https://img.freepik.com/premium-photo/wavy-black-white-background-wallpaper-grey-smooth-lines-shiny-modern-geometric-polygon-textures_1030874-14146.jpg?semt=ais_incoming&w=740&q=80"
                 alt="OICOT FUKUIロゴ"
-                className="w-full rounded-lg fade-in"
+                className="w-full rounded-lg shadow-lg fade-in"
               />
               <div className="slide-in">
                 <h3 className="text-2xl font-light mb-4">地方エンタメの未来をつくる</h3>
