@@ -138,17 +138,23 @@ export default function Home() {
         </section>
 
         {/* OICOT FUKUIセクション */}
-        <section id="oicot" className="py-20 px-4 bg-gray-50/90 backdrop-blur-sm">
-          <div className="container max-w-3xl mx-auto">
+        <section id="oicot" className="py-20 px-4 bg-white/80 backdrop-blur-sm">
+          <div className="container max-w-4xl mx-auto">
             <div className="mb-8 fade-in">
               <span className="text-sm text-gray-500 tracking-wider">02</span>
-              <h2 className="text-4xl font-light tracking-wider mt-2">OICOT FUKUI</h2>
+              {/* <h2>タグを<button>に変更し、onClickでリンクを設定 */}
+              <button
+                onClick={() => window.open('https://moriyuka-hp.vercel.app/oicot-fukui.html', '_blank')}
+                className="text-4xl font-light tracking-wider mt-2 text-left w-full"
+              >
+                OICOT FUKUI
+              </button>
             </div>
-            <div className="space-y-8">
-              <img 
-                src="https://img.freepik.com/premium-photo/wavy-black-white-background-wallpaper-grey-smooth-lines-shiny-modern-geometric-polygon-textures_1030874-14146.jpg?semt=ais_incoming&w=740&q=80" 
+            <div className="grid md:grid-cols-2 gap-8 items-start">
+              <img
+                src="https://img.fre freepik.com/premium-photo/wavy-black-white-background-wallpaper-grey-smooth-lines-shiny-modern-geometric-polygon-textures_1030874-14146.jpg?semt=ais_incoming&w=740&q=80"
                 alt="OICOT FUKUIロゴ"
-                className="w-full rounded-lg shadow-lg fade-in"
+                className="w-full rounded-lg fade-in"
               />
               <div className="slide-in">
                 <h3 className="text-2xl font-light mb-4">地方エンタメの未来をつくる</h3>
@@ -223,28 +229,32 @@ export default function Home() {
         </section>
 
         {/* WORKSセクション */}
-        <section id="works" className="py-20 px-4 bg-white/90 backdrop-blur-sm">
-          <div className="container max-w-3xl mx-auto">
+        <section id="works" className="py-20 px-4 bg-white/80 backdrop-blur-sm">
+          <div className="container max-w-4xl mx-auto">
             <div className="mb-12 fade-in">
               <span className="text-sm text-gray-500 tracking-wider">05</span>
               <h2 className="text-4xl font-light tracking-wider mt-2">WORKS</h2>
             </div>
-            <div className="grid md:grid-cols-2 gap-6">
+            <div className="grid md:grid-cols-3 gap-6">
               {[
-                { category: 'MOVIE', title: '映画作品一覧' },
-                { category: 'DRAMA', title: 'ドラマ作品一覧' },
-                { category: 'STAGE', title: '舞台作品一覧' },
-                { category: 'CM', title: 'CM作品一覧' },
-                { category: 'PROMOTION', title: 'プロモーション' },
+                { category: 'MOVIE', title: '映画作品一覧', url: 'https://moriyuka-hp.vercel.app/movie.html' },
+                { category: 'DRAMA', title: 'ドラマ作品一覧', url: 'https://moriyuka-hp.vercel.app/drama.html' }, // 仮URL
+                { category: 'STAGE', title: '舞台作品一覧', url: 'https://moriyuka-hp.vercel.app/stage.html' }, // 仮URL
+                { category: 'CM', title: 'CM作品一覧', url: 'https://moriyuka-hp.vercel.app/cm.html' }, // 仮URL
+                { category: 'PROMOTION', title: 'プロモーション', url: 'https://moriyuka-hp.vercel.app/promotion.html' }, // 仮URL
               ].map((work, index) => (
-                <div 
+                <a
                   key={index}
+                  href={work.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="border border-gray-200 p-6 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer fade-in"
                   style={{ animationDelay: `${index * 0.1}s` }}
                 >
                   <p className="text-xs text-gray-500 mb-2">{work.category}</p>
                   <p className="font-light">{work.title}</p>
-                </div>
+                  <span className="text-xl">↑</span> {/* 外部リンクを示すアイコン */}
+                </a>
               ))}
             </div>
           </div>
