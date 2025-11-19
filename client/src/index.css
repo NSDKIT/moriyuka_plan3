@@ -1,3 +1,5 @@
+/* client/src/index.css */
+
 @import url('https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;600&display=swap');
 
 @import "tailwindcss";
@@ -114,6 +116,27 @@
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.488 0.243 264.376);
 }
+
+/* モノクロスタイル */
+.is-monochrome {
+  filter: grayscale(100%);
+  /* 必要に応じて、背景色や文字色などもモノクロに調整 */
+  /* background-color: #f0f0f0; */
+  /* color: #333; */
+}
+
+/* OICOTセクションがカラー表示されるときのスタイル */
+.oicot-section.is-colorful {
+  filter: grayscale(0%); /* カラー表示に戻す */
+  /* OICOTセクション固有のカラー関連スタイルをここに追加 */
+  /* 例: background-color: white; */
+}
+
+/* 最後のセクション（CONTACTなど）が画面内に入ったときのモノクロスタイル */
+.last-section.is-monochrome {
+  filter: grayscale(100%);
+}
+
 
 @layer base {
   * {
