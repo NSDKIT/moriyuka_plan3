@@ -1,1 +1,0 @@
-# moriyuka_plan3
